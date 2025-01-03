@@ -32,6 +32,8 @@ import org.slf4j.LoggerFactory;
  *    1.0 original version
  */
 public class Failure<T> extends Try<T> {
+	private static final long serialVersionUID = 909272336L;
+
 	/** logger for this class */
 	private static final Logger logger =
 		LoggerFactory.getLogger(Failure.class);

@@ -27,6 +27,8 @@ import com.cynava.outcomes.optional.Optional;
  *    1.0 original version
  */
 public abstract class Try<T> implements TryInterface<T> {
+	private static final long serialVersionUID = 991774995L;
+
 	/**
 	 * Creates a {@code Success} instance containing the given value
 	 *

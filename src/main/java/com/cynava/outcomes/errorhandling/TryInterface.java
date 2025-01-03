@@ -15,6 +15,7 @@
  */
 package com.cynava.outcomes.errorhandling;
 
+import java.io.Serializable;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -31,7 +32,7 @@ import com.cynava.outcomes.optional.Optional;
  * Version history:
  *    1.0 original version
  */
-public interface TryInterface<T> {
+public interface TryInterface<T>  extends Serializable {
 	/**
 	 * Determines if the outcome were successful
 	 *

@@ -32,6 +32,8 @@ import java.util.stream.Stream;
  *    1.0 original version
  */
 public class Present<T> extends Optional<T> {
+	private static final long serialVersionUID = 956358313L;
+
 	/** Value in the optional */
 	private final T value;
 

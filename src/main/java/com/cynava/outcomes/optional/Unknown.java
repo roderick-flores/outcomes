@@ -32,6 +32,8 @@ import java.util.stream.Stream;
  *    1.0 original version
  */
 public class Unknown<T> extends Optional<T> {
+	private static final long serialVersionUID = 916545660L;
+
 	/**
 	 * Constructs a Unknown instance
 	 */

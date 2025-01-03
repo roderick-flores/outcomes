@@ -28,6 +28,8 @@ package com.cynava.outcomes.optional;
  *    1.0 original version
  */
 public abstract class Optional<T> implements OptionalInterface<T>{
+	private static final long serialVersionUID = 720995935L;
+
 	/**
 	 * Creates a {@code Present} instance containing the given value
 	 *

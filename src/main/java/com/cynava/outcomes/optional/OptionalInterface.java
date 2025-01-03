@@ -15,6 +15,7 @@
  */
 package com.cynava.outcomes.optional;
 
+import java.io.Serializable;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -56,7 +57,7 @@ import java.util.stream.Stream;
  * Version history:
  *    1.0 original version
  */
-public interface OptionalInterface<T> {
+public interface OptionalInterface<T> extends Serializable {
 	/**
 	 * Determines if a value is present
 	 *

@@ -33,6 +33,8 @@ import java.util.stream.Stream;
  *    2.0 introduced an Unknown type
  */
 public class Empty<T> extends Optional<T> {
+	private static final long serialVersionUID = 708637871L;
+
 	/**
 	 * Constructs an empty instance
 	 */
