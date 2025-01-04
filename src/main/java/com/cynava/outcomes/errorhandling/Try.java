@@ -22,35 +22,13 @@ import com.cynava.outcomes.optional.Optional;
  * a successfully computed value
  * 
  * @param <T> Type of object that might be stored in the Try outcome
- * @version 1.0
+ * @version 1.1
  * Version history:
  *    1.0 original version
- *    1.1 switched to Throwable
+ *    1.1 removed static methods
  */
 public abstract class Try<T> implements TryInterface<T> {
 	private static final long serialVersionUID = 991774995L;
-
-	/**
-	 * Creates a {@code Success} instance containing the given value
-	 *
-	 * @param value {@code Non-null} value
-	 * @param <T> Type of the value
-	 * @return {@code Success} instance with the return value present
-	 * @throws NullPointerException Thrown when value is {@code null}
-	 */
-	public static <T> Try<T> of(final T value) {
-		return Success.of(value);
-	}
-
-	/**
-	 * Creates an empty {@code Failure} instance
-	 *
-	 * @param <T> Type of the non-existent value
-	 * @return {@code Failure} instance
-	 */
-	public static <T> Try<T> of(final Throwable throwable) {
-		return Failure.of(throwable);
-	}
 
 	@Override
 	public Optional<T> toOptional() {

@@ -15,17 +15,23 @@
  */
 package com.cynava.outcomes.errorhandling;
 
+import org.apache.commons.math3.exception.OutOfRangeException;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class FailureTest {
 	/**
@@ -242,11 +248,127 @@ public class FailureTest {
 	}
 
 	/**
-	 * A successful outcome can be created by calling {@code Failure.of} with
-	 * a {@code T} value as an argument
+	 * {@code isInstance} should return true when the supplied class is compatible
+	 * with the type of exception held in the failure. It should return false
+	 * otherwise
 	 */
 	@Test void Test19() {
-		final Try<Double> outcome = Failure.of(3.0D);
-		assertTrue(outcome.isSuccess());
+		ArrayList<Failure<?>> failures = new ArrayList<>();
+		failures.add( Failure.of(new NullPointerException()) );
+		failures.add( Failure.of(new IllegalArgumentException()) );
+		failures.add( Failure.of(new OutOfRangeException(-1.0D, 0.0D, 100.0D)) );
+		failures.add( Failure.of(new IndexOutOfBoundsException()) );
+
+		assertTrue(failures.get(0).isInstance(NullPointerException.class));
+		assertTrue(failures.get(1).isInstance(IllegalArgumentException.class));
+		assertTrue(failures.get(2).isInstance(OutOfRangeException.class));
+		assertTrue(failures.get(2).isInstance(IllegalArgumentException.class));
+		assertTrue(failures.get(3).isInstance(IndexOutOfBoundsException.class));
+
+		for( int index = 0; index < failures.size(); index++ ) {
+			if(index == 0) {
+				continue;
+			}
+			assertFalse(failures.get(index).isInstance(NullPointerException.class));
+		}
+
+		for( int index = 0; index < failures.size(); index++ ) {
+			if(index == 1 || index == 2) {
+				continue;
+			}
+			assertFalse(failures.get(index).isInstance(IllegalArgumentException.class));
+		}
+
+		for( int index = 0; index < failures.size(); index++ ) {
+			if(index == 2) {
+				continue;
+			}
+			assertFalse(failures.get(index).isInstance(OutOfRangeException.class));
+		}
+
+		for( int index = 0; index < failures.size(); index++ ) {
+			if(index == 3) {
+				continue;
+			}
+			assertFalse(failures.get(index).isInstance(IndexOutOfBoundsException.class));
+		}
+	}
+
+	/**
+	 * {@code should invert a Try}
+	 */
+	@Test void Test20() {
+		final Try<Double> failureOutcome = Failure.of(new TimeoutException());
+		assertTrue(failureOutcome.isFailure());
+		assertFalse(failureOutcome.failed().isFailure());
+		assertDoesNotThrow(
+			() -> {
+				assertTrue((failureOutcome.failed()).get() instanceof TimeoutException);
+			}
+		);
+
+		final Try<Double> successOutcome = Success.of(3.14159D);
+		assertTrue(successOutcome.isSuccess());
+		assertFalse(successOutcome.failed().isSuccess());
+		assertThrows(
+			UnsupportedOperationException.class,
+			() -> {
+				successOutcome.failed().get();
+			}
+		);
+	}
+
+	/**
+	 * Demonstrate that specific Exceptions can be found
+	 */
+	@Test void Test21() {
+		final ArrayList<Try<Double>> outcomes = new ArrayList<>();
+		outcomes.add(Failure.of(new IllegalArgumentException("one")));
+		outcomes.add(Success.of(2.0D));
+		outcomes.add(Failure.of(new IllegalArgumentException("three")));
+		outcomes.add(Success.of(4.0D));
+		outcomes.add(Failure.of(new IllegalArgumentException("five")));
+		outcomes.add(Success.of(6.0D));
+		outcomes.add(Failure.of(new IllegalArgumentException("seven")));
+		outcomes.add(Success.of(8.0D));
+		outcomes.add(Failure.of(new IllegalArgumentException("nine")));
+		outcomes.add(Success.of(10.0D));
+		outcomes.add(Failure.of(new TimeoutException("eleven")));
+
+		final Predicate<Try<Double>> successPredicate = new Predicate<>() {
+			@Override
+			public boolean test(Try<Double> t) {
+				return t.isSuccess();
+			}
+						
+		};
+
+		final Predicate<Try<Double>> failurePredicate = new Predicate<>() {
+			@Override
+			public boolean test(Try<Double> t) {
+				return t.isFailure();
+			}
+						
+		};
+
+		final Predicate<Try<Double>> timedOutPredicate = new Predicate<>() {
+			@Override
+			public boolean test(Try<Double> t) {
+				return t.isFailure() ?
+					 ((Failure<Double>)t).isInstance(TimeoutException.class) : false;
+			}						
+		};
+
+		final List<Try<Double>> successes =
+			outcomes.stream().filter(successPredicate).collect(Collectors.toList());
+		assertEquals(5, successes.size());
+
+		final List<Try<Double>> failures =
+			outcomes.stream().filter(failurePredicate).collect(Collectors.toList());
+		assertEquals(6, failures.size());
+
+		final List<Try<Double>> timeoutFailures =
+			outcomes.stream().filter(timedOutPredicate).collect(Collectors.toList());
+		assertEquals(6, timeoutFailures.size());
 	}
 }

@@ -32,6 +32,7 @@ import com.cynava.outcomes.optional.Optional;
  * Version history:
  *    1.0 original version
  *    1.1 switched to Throwable
+ *    1.2 added failed function
  */
 public interface TryInterface<T>  extends Serializable {
 	/**
@@ -95,7 +96,7 @@ public interface TryInterface<T>  extends Serializable {
 
 	/**
 	 * Applies the given mapping function to the {@code Try}, if a value
-	 * is present, or this {@code Failure} otherwise
+	 * is Success, or this {@code Failure} otherwise
 	 *
 	 * @param mapper Mapping function to apply
 	 * @param <U> The type of the value returned from the mapping function
@@ -120,8 +121,16 @@ public interface TryInterface<T>  extends Serializable {
 	/**
 	 * Coverts this {@code Try} to an {@code Optional} instance
 	 * 
-	 * @return {@code Present} containing the value for a {@code Success} or
+	 * @return {@code Success} containing the value for a {@code Success} or
 	 *         {@code Empty} for a {@code Failure}
 	 */
 	public Optional<T> toOptional();
+
+	/**
+	 * Inverts this {@code Try}
+	 * 
+	 * @return {@code Try} containing a {@code Throwable} for a
+	 *         {@code Failure} or a {@code Failure} for a {@code Success}
+	 */
+	public Try<Throwable> failed();
 }

@@ -274,15 +274,4 @@ public class SuccessTest {
 		final Try<Double> outcome = Success.of(3.4D);
 		assertEquals("Success[3.4]", outcome.toString());
 	}
-
-	/**
-	 * A failed outcome can be created by calling {@code Success.of} with
-	 * an exception as an argument
-	 */
-	@Test void Test20() {
-		final IllegalArgumentException e =
-			new IllegalArgumentException("Success.of can but should not take an exception");
-		final Try<Double> outcome = Success.of(e);
-		assertTrue(outcome.isFailure());
-	}
 }

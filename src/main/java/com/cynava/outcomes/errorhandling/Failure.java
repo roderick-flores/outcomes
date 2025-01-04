@@ -20,24 +20,18 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Representation of an optional with a value
  * 
  * @param <T> Type of object that might be stored in the Try outcome
- * @version 1.1
+ * @version 1.2
  * Version history:
  *    1.0 original version
  *    1.1 switched to Throwable; added a means to check the type of the Throwable
+ *    1.2 added failed function
  */
 public class Failure<T> extends Try<T> {
 	private static final long serialVersionUID = 909272336L;
-
-	/** logger for this class */
-	private static final Logger logger =
-		LoggerFactory.getLogger(Failure.class);
 
 	/** Throwable in the failure */
 	private final Throwable value;
@@ -61,29 +55,6 @@ public class Failure<T> extends Try<T> {
 			Failure.of(new NullPointerException("value cannot be null"));
 		}
 		return new Failure<T>(value);
-	}
-
-	/**
-	 * Logs a warning if {@code Failure.of} is called with a {@code T} as
-	 * the argument
-	 *
-	 * @param <T> Type of object that might be stored in the Try outcome
-	 * @param value Non-null value
-	 * @return {@code Success} instance with the return value present
-	 * @throws NullPointerException When a null is specified as the value
-	 */
-	public static <T> Try<T> of(final T value) throws NullPointerException {
-		if( value == null ) {
-			throw new NullPointerException("value cannot be null");
-		}
-		try{
-			throw new IllegalArgumentException("value " + value);
-		} catch(IllegalArgumentException e) {
-			e.printStackTrace();
-		}
-
-		logger.warn("a value should not be passed to Failure.of()");
-		return Success.of(value);
 	}
 
 	@Override
@@ -141,6 +112,11 @@ public class Failure<T> extends Try<T> {
 	@Override
 	public Try<T> filter(final Predicate<? super T> predicate) {
 		return this;
+	}
+
+	@Override
+	public Try<Throwable> failed() {
+		return Success.of(value);
 	}
 
 	@Override

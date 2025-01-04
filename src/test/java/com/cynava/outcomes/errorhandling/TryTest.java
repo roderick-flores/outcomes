@@ -19,44 +19,15 @@ import org.junit.jupiter.api.Test;
 
 import com.cynava.outcomes.optional.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TryTest {
 	/**
-	 * A successful outcome should be able to be stored as a {@code Success}
-	 */
-	@Test void Test01() {
-		final Try<Double> outcome = Try.of(3.0D);
-		assertTrue(outcome.isSuccess());
-		assertDoesNotThrow(
-			() -> {
-				assertEquals(3.0D, outcome.get());
-			}
-		);
-	}
-
-	/**
-	 * An exception outcome should be able to be stored as a {@code Failure}
-	 */
-	@Test void Test02() {
-		final Try<Double> outcome = Try.of(new NullPointerException());
-		assertTrue(outcome.isFailure());
-		assertThrows(
-			NullPointerException.class,
-			() -> {
-				assertEquals(3.0D, outcome.get());
-			}
-		);
-	}
-
-	/**
 	 * A {@code Success} should be able to be converted to a {@code Present}
 	 */
 	@Test void Test03() {
-		final Try<Double> outcome = Try.of(3.0D);
+		final Try<Double> outcome = Success.of(3.0D);
 		final Optional<Double> outcomeOptional = outcome.toOptional();
 		assertTrue(outcomeOptional.isPresent());
 		assertEquals(3.0D, outcomeOptional.get());
@@ -66,7 +37,7 @@ public class TryTest {
 	 * A {@code Failure} should be able to be converted to an {@code Empty}
 	 */
 	@Test void Test04() {
-		final Try<Double> outcome = Try.of(new NullPointerException());
+		final Try<Double> outcome = Failure.of(new NullPointerException());
 		final Optional<Double> outcomeOptional = outcome.toOptional();
 		assertTrue(outcomeOptional.isEmpty());
 	}

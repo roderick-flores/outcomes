@@ -21,25 +21,20 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Representation of an optional with a value
  * 
  * @param <T> Type of object that might be stored in the Try outcome
- * @version 1.1
+ * @version 1.2
  * Version history:
  *    1.0 original version
  *    1.1 switched to Throwable
+ *    1.2 added failed function
  */
 public class Success<T> extends Try<T> {
 	private static final long serialVersionUID = 149936817L;
 
 	/** logger for this class */
-	private static final Logger logger =
-		LoggerFactory.getLogger(Success.class);
-
 	/** Value in the optional */
 	private final T value;
 
@@ -67,25 +62,6 @@ public class Success<T> extends Try<T> {
 			throw new NullPointerException("value cannot be null");
 		}
 		return new Success<T>(value);
-	}
-
-	/**
-	 * Logs a warning if {@code Success.of} is called with a Throwable as
-	 * the argument
-	 *
-	 * @param throwable {@code Non-null} throwable
-	 * @param <T> Type of object that might be stored in the Try outcome
-	 * @return {@code Failure} instance with the value present
-	 * @throws NullPointerException When a null is specified as the value
-	 */
-	public static <T> Try<T> of(final Throwable throwable)
-		throws IllegalArgumentException
-	{
-		if( throwable == null ) {
-			Failure.of(new NullPointerException("throwable cannot be null"));
-		}
-		logger.warn("a throwable should not be passed to Success.of()");
-		return Failure.of(throwable);
 	}
 
 	@Override
@@ -150,6 +126,11 @@ public class Success<T> extends Try<T> {
 		}
 		return predicate.test(value) ? this :
 			Failure.of(new NoSuchElementException("Predicate does not hold for " + value));
+	}
+
+	@Override
+	public Try<Throwable> failed() {
+		return Failure.of(new UnsupportedOperationException("Inverted Success"));
 	}
 
 	@Override
