@@ -27,9 +27,10 @@ import org.slf4j.LoggerFactory;
  * Representation of an optional with a value
  * 
  * @param <T> Type of object that might be stored in the Try outcome
- * @version 1.0
+ * @version 1.1
  * Version history:
  *    1.0 original version
+ *    1.1 switched to Throwable; added a means to check the type of the Throwable
  */
 public class Failure<T> extends Try<T> {
 	private static final long serialVersionUID = 909272336L;
@@ -38,13 +39,13 @@ public class Failure<T> extends Try<T> {
 	private static final Logger logger =
 		LoggerFactory.getLogger(Failure.class);
 
-	/** Exception in the failure */
-	private final Exception value;
+	/** Throwable in the failure */
+	private final Throwable value;
 
 	/**
 	 * Constructs a Failure instance
 	 */
-	private Failure(final Exception value) {
+	private Failure(final Throwable value) {
 		this.value = Objects.requireNonNull(value);
 	}
 
@@ -55,7 +56,7 @@ public class Failure<T> extends Try<T> {
 	 * @param <T> Type of object that might be stored in the Try outcome
 	 * @return {@code Success} instance with the return value present
 	 */
-	public static <T> Try<T> of(final Exception value) {
+	public static <T> Failure<T> of(final Throwable value) {
 		if( value == null ) {
 			Failure.of(new NullPointerException("value cannot be null"));
 		}
@@ -74,6 +75,11 @@ public class Failure<T> extends Try<T> {
 	public static <T> Try<T> of(final T value) throws NullPointerException {
 		if( value == null ) {
 			throw new NullPointerException("value cannot be null");
+		}
+		try{
+			throw new IllegalArgumentException("value " + value);
+		} catch(IllegalArgumentException e) {
+			e.printStackTrace();
 		}
 
 		logger.warn("a value should not be passed to Failure.of()");
@@ -104,8 +110,20 @@ public class Failure<T> extends Try<T> {
 	}
 
 	@Override
-	public T get() throws Exception {
+	public T get() throws Throwable {
 		throw value;
+	}
+
+	/**
+	 * Determines if the specified {@code Throwable} class is assignment-compatible
+	 * with the value in this {@code Failure}
+	 * 
+	 * @param throwable {@code Throwable} is assignment-compatible with the failure
+	 * @return True if the failure is assignment-compatible with the failure and
+	 *         false otherwise
+	 */
+	public <E extends Throwable> boolean isInstance(Class<E> throwable) {
+		return throwable.isInstance(value);
 	}
 
 	@Override
@@ -127,7 +145,7 @@ public class Failure<T> extends Try<T> {
 
 	@Override
 	public boolean equals(final Object object) {
-		// The other object is considered equal if it is also a {@code Present} 
+		// The other object is considered equal if it is also a {@code Failure} 
 		// and both instances values are equal to each other   
 		if( this == object ) {
 			return true;
