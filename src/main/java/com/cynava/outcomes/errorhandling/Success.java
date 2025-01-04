@@ -28,9 +28,10 @@ import org.slf4j.LoggerFactory;
  * Representation of an optional with a value
  * 
  * @param <T> Type of object that might be stored in the Try outcome
- * @version 1.0
+ * @version 1.1
  * Version history:
  *    1.0 original version
+ *    1.1 switched to Throwable
  */
 public class Success<T> extends Try<T> {
 	private static final long serialVersionUID = 149936817L;
@@ -61,7 +62,7 @@ public class Success<T> extends Try<T> {
 	 * @return {@code Success} instance with the return value present
 	 * @throws NullPointerException When a null is specified as the value
 	 */
-	public static <T> Try<T> of(final T value) throws NullPointerException {
+	public static <T> Success<T> of(final T value) throws NullPointerException {
 		if( value == null ) {
 			throw new NullPointerException("value cannot be null");
 		}
@@ -69,22 +70,22 @@ public class Success<T> extends Try<T> {
 	}
 
 	/**
-	 * Logs a warning if {@code Success.of} is called with an exception as
+	 * Logs a warning if {@code Success.of} is called with a Throwable as
 	 * the argument
 	 *
-	 * @param exception {@code Non-null} exception
+	 * @param throwable {@code Non-null} throwable
 	 * @param <T> Type of object that might be stored in the Try outcome
 	 * @return {@code Failure} instance with the value present
 	 * @throws NullPointerException When a null is specified as the value
 	 */
-	public static <T> Try<T> of(final Exception exception)
+	public static <T> Try<T> of(final Throwable throwable)
 		throws IllegalArgumentException
 	{
-		if( exception == null ) {
-			Failure.of(new NullPointerException("exception cannot be null"));
+		if( throwable == null ) {
+			Failure.of(new NullPointerException("throwable cannot be null"));
 		}
-		logger.warn("an exception should not be passed to Success.of()");
-		return Failure.of(exception);
+		logger.warn("a throwable should not be passed to Success.of()");
+		return Failure.of(throwable);
 	}
 
 	@Override
@@ -108,7 +109,7 @@ public class Success<T> extends Try<T> {
 	}
 
 	@Override
-	public T get() throws Exception {
+	public T get() throws Throwable {
 		return value;
 	}
 
@@ -124,7 +125,7 @@ public class Success<T> extends Try<T> {
 			@SuppressWarnings("unchecked")
 			final Try<U> result = (Try<U>)mapper.apply(value);
 			return result;
-		} catch( Exception e ) {
+		} catch( Throwable e ) {
 			return Failure.of(e);
 		}
 	}
@@ -137,7 +138,7 @@ public class Success<T> extends Try<T> {
 
 		try {
 			return Success.of(mapper.apply(value));
-		} catch( Exception e ) {
+		} catch( Throwable e ) {
 			return Failure.of(e);
 		}
 	}
@@ -153,7 +154,7 @@ public class Success<T> extends Try<T> {
 
 	@Override
 	public boolean equals(final Object object) {
-		// The other object is considered equal if it is also a {@code Present} 
+		// The other object is considered equal if it is also a {@code Success} 
 		// and both instances values are equal to each other   
 		if( this == object ) {
 			return true;

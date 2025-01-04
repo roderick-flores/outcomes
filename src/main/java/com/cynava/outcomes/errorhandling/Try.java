@@ -18,13 +18,14 @@ package com.cynava.outcomes.errorhandling;
 import com.cynava.outcomes.optional.Optional;
 
 /**
- * Outcome of a computation that may either result in an exception or
+ * Outcome of a computation that may either result in a Throwable or
  * a successfully computed value
  * 
  * @param <T> Type of object that might be stored in the Try outcome
  * @version 1.0
  * Version history:
  *    1.0 original version
+ *    1.1 switched to Throwable
  */
 public abstract class Try<T> implements TryInterface<T> {
 	private static final long serialVersionUID = 991774995L;
@@ -47,15 +48,15 @@ public abstract class Try<T> implements TryInterface<T> {
 	 * @param <T> Type of the non-existent value
 	 * @return {@code Failure} instance
 	 */
-	public static <T> Try<T> of(final Exception exception) {
-		return Failure.of(exception);
+	public static <T> Try<T> of(final Throwable throwable) {
+		return Failure.of(throwable);
 	}
 
 	@Override
 	public Optional<T> toOptional() {
 		try {
 			return Optional.of(get());
-		} catch( Exception e ) {
+		} catch( Throwable e ) {
 			// return an empty when the Try is a Failure
 			return Optional.empty();
 		}

@@ -24,13 +24,14 @@ import com.cynava.outcomes.optional.Optional;
 
 /**
  * Interface representing the outcome of a computation that may either
- * result in a failure, represented by an exception, or a successfully
+ * result in a failure, represented by an Throwable, or a successfully
  * computed {@code T} value
  * 
  * @param <T> Type of object that might be stored in the Try outcome
- * @version 1.0
+ * @version 1.1
  * Version history:
  *    1.0 original version
+ *    1.1 switched to Throwable
  */
 public interface TryInterface<T>  extends Serializable {
 	/**
@@ -72,12 +73,12 @@ public interface TryInterface<T>  extends Serializable {
 
 	/**
 	 * Returns the {@code Success} value, if the outcome were successful.
-	 * or throws the exception in the {@code Failure} otherwise
+	 * or throws the Throwable in the {@code Failure} otherwise
 	 *
 	 * @return Stored {@code Success}
-	 * @throws Exception When the {@code Try} is a {@code Failure}
+	 * @throws Throwable When the {@code Try} is a {@code Failure}
 	 */
-	public T get() throws Exception;
+	public T get() throws Throwable;
 
 	/**
 	 * Applies the given mapping function to the value from this Success or
