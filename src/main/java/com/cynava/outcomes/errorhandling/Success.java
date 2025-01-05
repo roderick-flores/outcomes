@@ -44,6 +44,7 @@ public class Success<T> extends Try<T> {
 	 * @throws NullPointerException Thrown when value is {@code null}
 	 */
 	private Success(final T value) throws NullPointerException {
+		super();
 		this.value = Objects.requireNonNull(value);
 	}
 

@@ -41,6 +41,7 @@ public class Present<T> extends Optional<T> {
 	 * Constructs a present instance
 	 */
 	private Present(final T value) {
+		super();
 		this.value = Objects.requireNonNull(value);
 	}
 

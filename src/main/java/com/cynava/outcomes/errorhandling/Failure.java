@@ -40,6 +40,7 @@ public class Failure<T> extends Try<T> {
 	 * Constructs a Failure instance
 	 */
 	private Failure(final Throwable value) {
+		super();
 		this.value = Objects.requireNonNull(value);
 	}
 
@@ -89,6 +90,7 @@ public class Failure<T> extends Try<T> {
 	 * Determines if the specified {@code Throwable} class is assignment-compatible
 	 * with the value in this {@code Failure}
 	 * 
+	 * @param <E> Type of class against which this Failure will be compared 
 	 * @param throwable {@code Throwable} is assignment-compatible with the failure
 	 * @return True if the failure is assignment-compatible with the failure and
 	 *         false otherwise

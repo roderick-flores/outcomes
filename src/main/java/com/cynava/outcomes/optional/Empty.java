@@ -38,7 +38,9 @@ public class Empty<T> extends Optional<T> {
 	/**
 	 * Constructs an empty instance
 	 */
-	private Empty() {}
+	private Empty() {
+		super();
+	}
 
 	/**
 	 * Creates an empty {@code Optional} instance.  No value is present
