@@ -1,11 +1,20 @@
 plugins {
 	id 'java'
+	id 'java-library'
+	id 'maven-publish'
+	id 'signing'
 }
+
+// Note: the keyring file is created using:
+//     gpg --export-secret-keys -o maven_secring.gpg
 
 repositories {
 	// Use Maven Central for resolving dependencies.
 	mavenCentral()
 }
+
+group = 'com.cynava.outcomes'
+version = '0.1.0'
 
 dependencies {
 	// Use JUnit Jupiter for testing.
@@ -15,7 +24,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.junit.platform/junit-platform-launcher
 	testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: 'latest.release'
 	testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: 'latest.release'
-    testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: 'latest.release'
+	testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: 'latest.release'
 
 	// Apache Commons Math Library
 	// Apache License 2.0: https://www.apache.org/licenses/LICENSE-2.0
@@ -45,4 +54,56 @@ tasks.named('test') {
 
 	maxHeapSize = '2G'
 	maxParallelForks = 8
+}
+
+java {
+	withJavadocJar()
+	withSourcesJar()
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			groupId = 'com.cynava.outcomes'
+			artifactId = 'cynava-outcomes'
+			version = '0.1.0'
+
+			from components.java
+
+			versionMapping {
+				usage('java-api') {
+					fromResolutionOf('runtimeClasspath')
+				}
+				usage('java-runtime') {
+					fromResolutionResult()
+				}
+			}
+
+			pom {
+				name = 'cynava-outcomes'
+				description = 'A concise description of my library'
+				licenses {
+					license {
+						name = 'The Apache License, Version 2.0'
+						url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+					}
+				}
+				scm {
+					connection = 'scm:git:git://github.com/roderick-flores/outcomes'
+					developerConnection = 'scm:git:ssh://github.com/roderick-flores/outcomes'
+					// scm:git:file://localhost/Users/roderickflores/.m2/repository
+				}
+			}
+		}
+	}
+}
+
+javadoc {
+	if(JavaVersion.current().isJava9Compatible()) {
+		options.addBooleanOption('html5', true)
+	}
+}
+
+signing {
+	sign publishing.publications.mavenJava
 }
