@@ -36,11 +36,13 @@ import java.util.stream.Stream;
  * simultaneously indicate that a value has not been set or that a
  * value should be assigned. For example:
  * 
- *     Optional<SomeClass> sc_optional = readValue();
+ * <pre>
+ *     Optional&lt;?&gt; sc_optional = readValue();
  *     if( sc_optional.isEmpty() ) {
  *         // calculate the value if it has not be done previously
  *         sc_optional = calculateValue(args);
  *     }
+ * </pre>
  * 
  * This, of course, assumes that the value could be calculated based
  * upon the supplied {@code args}. In an effort to add clarity, this
@@ -196,10 +198,6 @@ public interface OptionalInterface<T> extends Serializable {
 	 * If the mapping function returns a {@code null} result then an empty
 	 * {@code OptionalInterface} is returned.
 	 *
-	 * <p>This method is similar to {@link #comparableMap(Function)}, but the
-	 * mapping function is one whose result is already an {@code OptionalInterface}
-	 * so it does not wrap it within an additional {@code OptionalInterface}.
-	 *
 	 * @param <U> Type of value of the {@code OptionalInterface} returned by the
 	 *            mapping function
 	 * @param mapper Mapping function
@@ -233,7 +231,6 @@ public interface OptionalInterface<T> extends Serializable {
 	 * Creates a sequential {@link Stream} containing only the value, if present,
 	 * or returns an empty {@code Stream}.
 	 *
-	 * @apiNote
 	 * This method can be used to transform a {@code Stream} of optional
 	 * elements to a {@code Stream} of present value elements:
 	 * <pre>{@code
