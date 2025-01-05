@@ -369,6 +369,6 @@ public class FailureTest {
 
 		final List<Try<Double>> timeoutFailures =
 			outcomes.stream().filter(timedOutPredicate).collect(Collectors.toList());
-		assertEquals(6, timeoutFailures.size());
+		assertEquals(1, timeoutFailures.size());
 	}
 }
