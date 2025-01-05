@@ -26,7 +26,7 @@ import com.cynava.outcomes.optional.Optional;
  * {@code OptionalInterface}. The value can be set to a value,
  * unknown, or empty.
  * 
- * @param T Type of value in the WORM
+ * @param <T> Type of value in the WORM
  * @see com.cynava.outcomes.optional.Optional
  */
 public final class WormValue<T> {
@@ -54,9 +54,7 @@ public final class WormValue<T> {
 	 * 
 	 * @param value Value to set in the worm
 	 */
-	public void set(T value)
-		throws InterruptedException
-	{
+	public void set(T value) {
 		if(value == null) {
 			throw new IllegalArgumentException("value cannot be null");
 		}
@@ -81,9 +79,7 @@ public final class WormValue<T> {
 	/**
 	 * Indicate that the worm value cannot be determined
 	 */
-	public void setUnknown()
-		throws InterruptedException
-	{
+	public void setUnknown() {
 		// block so that only one thread can be setting at a time
 		wLock.lock();
 
@@ -163,52 +159,32 @@ public final class WormValue<T> {
 	/**
 	 * Creates a Worm with a set value
 	 * 
-	 * @param T Type of value stored in the worm
+	 * @param <T> Type of value stored in the worm
 	 * @param value Value to set in the worm
 	 * @return {@code Worm<T>} instance
 	 */
 	public static <T> WormValue<T> of(final T value) {
-		// do not get interrupted. Setting a private worm
-		// value should not block
-		while(true) {
-			try {
-				final WormValue<T> worm = new WormValue<>();
-				worm.set(value);
-				return worm;
-			} catch( InterruptedException e ) {
-				// this should only happen if the thread calling this
-				// method is somehow interrupted
-				continue;
-			}
-		}
+		final WormValue<T> worm = new WormValue<>();
+		worm.set(value);
+		return worm;
 	}
 
 	/**
 	 * Creates a Worm with an unknown value
 	 * 
-	 * @param T Type of value stored in the worm
+	 * @param <T> Type of value stored in the worm
 	 * @return {@code Worm<T>} instance
 	 */
 	public static <T> WormValue<T> unknown() {
-		// do not get interrupted. Setting a private worm
-		// value should not block
-		while(true) {
-			try {
-				final WormValue<T> worm = new WormValue<>();
-				worm.setUnknown();
-				return worm;
-			} catch( InterruptedException e ) {
-				// this should only happen if the thread calling this
-				// method is somehow interrupted
-				continue;
-			}
-		}
+		final WormValue<T> worm = new WormValue<>();
+		worm.setUnknown();
+		return worm;
 	}
 
 	/**
 	 * Creates a Worm without a value
 	 * 
-	 * @param T Type of value stored in the worm
+	 * @param <T> Type of value stored in the worm
 	 * @return {@code Worm<T>} instance
 	 */
 	public static <T> WormValue<T> create() {
