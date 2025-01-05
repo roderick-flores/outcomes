@@ -30,6 +30,11 @@ import com.cynava.outcomes.optional.Optional;
 public abstract class Try<T> implements TryInterface<T> {
 	private static final long serialVersionUID = 991774995L;
 
+	/**
+	 * Constructs a Try
+	 */
+	protected Try() {}
+
 	@Override
 	public Optional<T> toOptional() {
 		try {

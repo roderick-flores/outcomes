@@ -31,6 +31,11 @@ public abstract class Optional<T> implements OptionalInterface<T>{
 	private static final long serialVersionUID = 720995935L;
 
 	/**
+	 * Constructs an Optional
+	 */
+	protected Optional() {}
+
+	/**
 	 * Creates a {@code Present} instance containing the given value
 	 *
 	 * @param value {@code Non-null} value
